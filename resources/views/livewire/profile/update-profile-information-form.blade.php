@@ -23,25 +23,32 @@ new class extends Component
     /**
      * Update the profile information for the currently authenticated user.
      */
-    public function updateProfileInformation(): void
-    {
-        $user = Auth::user();
+    // Contoh di dalam file komponen Livewire Anda
 
-        $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-        ]);
+public function updateProfileInformation(): void
+{
+    $user = Auth::user();
 
-        $user->fill($validated);
+    $validated = $this->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+    ]);
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
+    $user->fill($validated);
 
-        $user->save();
-
-        $this->dispatch('profile-updated', name: $user->name);
+    if ($user->isDirty('email')) {
+        $user->email_verified_at = null;
     }
+
+    $user->save();
+
+    // KIRIM EVENT UNTUK MENAMPILKAN PESAN "SAVED"
+    $this->dispatch('profile-updated'); 
+    
+    // TAMBAHKAN INI: Kirim event lagi, tapi kali ini dengan data nama baru
+    // Event ini yang akan didengarkan oleh sidebar
+    $this->dispatch('user-name-updated', name: $user->name);
+}
 
     /**
      * Send an email verification notification to the current user.

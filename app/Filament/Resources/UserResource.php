@@ -38,7 +38,8 @@ class UserResource extends Resource
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                                 $roles = $get('roles') ?? [];
-
+                                
+                                // FIX: Menggunakan nama peran lowercase agar konsisten
                                 if (Str::endsWith($state, '@admin.com')) {
                                     $id = Role::where('name', 'admin')->first()?->id;
                                     if ($id && !in_array($id, $roles)) {
@@ -69,6 +70,7 @@ class UserResource extends Resource
                                     return function (string $attribute, $value, \Closure $fail) use ($get) {
                                         $selectedRoles = Role::whereIn('id', $get('roles') ?? [])->pluck('name');
 
+                                        // FIX: Menggunakan nama peran lowercase untuk validasi
                                         if ($selectedRoles->contains('admin') && !Str::endsWith($value, '@admin.com')) {
                                             $fail('Email untuk peran Admin harus berakhiran @admin.com.');
                                         }
@@ -115,9 +117,10 @@ class UserResource extends Resource
                     ->label('Roles')
                     ->badge()
                     ->separator(', ')
+                    // FIX: Menggunakan nama peran lowercase untuk warna badge
                     ->color(fn (string $state): string => match ($state) {
-                        'admin' => 'primary',
-                        'programmer' => 'warning',
+                        'admin' => 'warning',
+                        'programmer' => 'info',
                         'asisten lab' => 'success',
                         default => 'gray',
                     })

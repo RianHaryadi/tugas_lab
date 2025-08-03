@@ -19,4 +19,8 @@ Route::view('profile', 'profile')
     ->middleware('auth')
     ->name('logout');
 
+Route::view('attendance', 'attendance.index')
+    ->middleware(['auth'])
+    ->name('attendance.index');
+
 require __DIR__.'/auth.php';
