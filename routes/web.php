@@ -22,5 +22,9 @@ Route::view('profile', 'profile')
 Route::view('attendance', 'attendance.index')
     ->middleware(['auth'])
     ->name('attendance.index');
+    
+Route::view('schedule', 'schedule.index')
+    ->middleware(['auth'])
+    ->name('schedule.index');
 
 require __DIR__.'/auth.php';

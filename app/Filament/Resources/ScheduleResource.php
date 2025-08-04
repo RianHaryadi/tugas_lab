@@ -9,11 +9,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ScheduleResource extends Resource
 {
     protected static ?string $model = Schedule::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
     public static function form(Form $form): Form
@@ -22,18 +22,28 @@ class ScheduleResource extends Resource
             ->schema([
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
-                    ->required(),
-                Forms\Components\Select::make('day_of_week')
+                    ->required()
+                    ->label('User'),
+
+                Forms\Components\DatePicker::make('date')
+                    ->required()
+                    ->label('Tanggal Bertugas'),
+
+                Forms\Components\Select::make('role')
+                    ->required()
                     ->options([
-                        'Senin' => 'Senin',
-                        'Selasa' => 'Selasa',
-                        'Rabu' => 'Rabu',
-                        'Kamis' => 'Kamis',
-                        'Jumat' => 'Jumat',
-                        'Sabtu' => 'Sabtu',
-                        'Minggu' => 'Minggu',
+                        'programmer' => 'Programmer',
+                        'asisten' => 'Asisten',
                     ])
-                    ->required(),
+                    ->label('Peran'),
+
+                Forms\Components\Textarea::make('description')
+                    ->label('Keterangan')
+                    ->maxLength(65535),
+
+                Forms\Components\Toggle::make('is_sick_leave')
+                    ->label('Sakit')
+                    ->default(false),
             ]);
     }
 
@@ -41,8 +51,33 @@ class ScheduleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('day_of_week')->badge(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('role')
+                    ->label('Peran')
+                    ->badge()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('date')
+                    ->date()
+                    ->label('Tanggal'),
+
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Keterangan')
+                    ->limit(50)
+                    ->toggleable(),
+
+                Tables\Columns\IconColumn::make('is_sick_leave')
+                    ->label('Sakit')
+                    ->boolean(),
+            ])
+            ->filters([
+                Tables\Filters\Filter::make('sick_leave')
+                    ->query(fn (Builder $query): Builder => $query->where('is_sick_leave', true))
+                    ->label('Sakit'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -62,5 +97,5 @@ class ScheduleResource extends Resource
             'create' => Pages\CreateSchedule::route('/create'),
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
         ];
-    }    
+    }
 }

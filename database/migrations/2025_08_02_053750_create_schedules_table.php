@@ -6,29 +6,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('title');
-            $table->text('description')->nullable();
+            $table->date('date')->comment('Tanggal tugas');
+            $table->enum('role', ['programmer', 'asisten'])->comment('Peran di hari tersebut');
 
-            // --- KOLOM UNTUK JADWAL SEKALI JALAN ---
-            // Diisi jika ini adalah jadwal spesifik, misal: "Meeting Project X"
-            $table->dateTime('start_time')->nullable();
-            $table->dateTime('end_time')->nullable();
+            $table->boolean('is_sick_leave')->default(false)->comment('Menandakan apakah user izin sakit');
+            $table->foreignId('backup_person_id')->nullable()->constrained('users')->onDelete('set null')->comment('Orang pengganti jika sakit');
 
-            // --- KOLOM UNTUK JADWAL BERULANG ---
-            // Diisi jika ini adalah jadwal rutin, misal: "Jaga Lab"
-            $table->enum('day_of_week', [
-                'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'
-            ])->nullable();
+            $table->text('description')->nullable()->comment('Keterangan tambahan jika ada');
 
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('schedules');

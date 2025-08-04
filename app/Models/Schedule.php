@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Schedule extends Model
 {
@@ -12,15 +11,39 @@ class Schedule extends Model
 
     protected $fillable = [
         'user_id',
-        'day_of_week',
+        'date',
+        'role',              // programmer / asisten
+        'description',
+        'is_sick_leave',
+        'backup_person_id',
+    ];
+
+    protected $casts = [
+        'date' => 'date',               // Cast ke Carbon instance
+        'is_sick_leave' => 'boolean',
     ];
 
     /**
-     * Relasi ke user.
-     * Satu aturan jadwal dimiliki oleh satu user.
+     * Pemilik jadwal.
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * User yang menjadi backup saat user izin sakit.
+     */
+    public function backupPerson()
+    {
+        return $this->belongsTo(User::class, 'backup_person_id');
+    }
+
+    /**
+     * Relasi ke absensi per sesi (jika nanti kamu tambahkan).
+     */
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
     }
 }

@@ -5,13 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
-use Spatie\Permission\Traits\HasRoles; // <-- 1. TAMBAHKAN INI
+use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Schedule[] $schedules
+ * @method \Illuminate\Database\Eloquent\Relations\HasMany schedules()
+ */
 class User extends Authenticatable implements FilamentUser
 {
-    // 2. TAMBAHKAN HasRoles DI SINI
+    // Menggunakan trait yang diperlukan, termasuk HasRoles untuk Spatie
     use HasFactory, Notifiable, HasRoles;
 
     /**
@@ -23,7 +28,6 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
-        // Kita tidak lagi menggunakan kolom 'role'
     ];
 
     /**
@@ -51,6 +55,7 @@ class User extends Authenticatable implements FilamentUser
 
     /**
      * Menentukan apakah pengguna dapat mengakses panel Filament.
+     * Menggunakan trait HasRoles dari Spatie.
      *
      * @param Panel $panel
      * @return bool

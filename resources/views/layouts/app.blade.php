@@ -61,6 +61,14 @@
                                 Absensi Harian
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('schedule.index') }}" wire:navigate
+                               class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors
+                               {{ request()->routeIs('schedule.index') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 0v4m0-4h4m-4 0H8m6 8H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2h-6z" /></svg>
+                                Jadwal Mingguan
+                            </a>
+                        </li>
                         <!-- Tambahkan item menu lain di sini -->
                     </ul>
                 </nav>

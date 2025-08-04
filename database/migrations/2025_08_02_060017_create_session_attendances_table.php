@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('session_attendances', function (Blueprint $table) {
         $table->id();
         $table->foreignId('attendance_id')->constrained()->onDelete('cascade');
-        $table->enum('session_name', ['Sesi 1', 'Sesi 2', 'Sesi 3', 'Sesi 4', 'Sesi 5']);
-        $table->timestamp('session_validated_at'); // Waktu saat sesi divalidasi
+        $table->enum('session_name', ['Sesi 1', 'Sesi 2', 'Sesi 3', 'Sesi 4', 'Sesi 5', 'Tugas di Rumah']);
+        $table->timestamp('session_validated_at')->nullable();
         $table->timestamps();
     });
     }
